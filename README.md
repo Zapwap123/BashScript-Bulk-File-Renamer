@@ -13,7 +13,7 @@ A Bash script to bulk rename files in a directory with a standardized pattern th
 
 ```
 .
-├── bulkFilRenamer.sh             # Main renaming script
+├── bulkFileRenamer.sh             # Main renaming script
 ├── downloadTestFilesScript.sh   # Script to generate test files
 └── file-organizer-test/         # Directory with test files (created by the test file script)
 ```
