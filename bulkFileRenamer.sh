@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # Script to bulk rename files in a directory with options for prefix, suffix, counter, and date format.
-# Usage: ./bulkFileRenamer.sh -d <directory> -p <prefix> -s <suffix> -r <rename-pattern> -t <date-format>
-
+# Usage: ./bulkFilRenamer.sh -d <directory> -p <prefix> -s <suffix> -r <rename-pattern> -t <date-format>
 
 # Function to show usage information
 function msgPromptHelper() {
@@ -17,7 +16,6 @@ function msgPromptHelper() {
 }
 
 # Parse command-line arguments
-# Example: ./bulkFileRenamer.sh -d /path/to/directory -p prefix_ -s _suffix -r file_# -t '%Y-%m-%d'
 while getopts "d:p:s:r:t:h" opt; do
     case "$opt" in
         d) directory="$OPTARG" ;;
@@ -39,7 +37,7 @@ if [ -z "$directory" ]; then
     fi
 fi
 
-# Optional user prompts for prefix, suffix, rename pattern, and date format
+# Optional user prompts for prefix, suffix, and date format
 if [ -z "$prefix" ]; then
     read -p "Enter the prefix to add to filenames (press Enter to skip): " prefix
 fi
@@ -48,12 +46,13 @@ if [ -z "$suffix" ]; then
     read -p "Enter the suffix to add to filenames (press Enter to skip): " suffix
 fi
 
-if [ -z "$rename_pattern" ]; then
-    read -p "Enter the rename pattern (e.g., 'file_#') (press Enter to skip): " rename_pattern
-fi
-
 if [ -z "$date_format" ]; then
     read -p "Enter the date format (e.g., '%Y-%m-%d') (press Enter to skip): " date_format
+fi
+
+# Always use a rename pattern with counter
+if [ -z "$rename_pattern" ]; then
+    rename_pattern="file_#"
 fi
 
 # Verify that directory exists
@@ -69,29 +68,17 @@ else
     current_date=""
 fi
 
-# Process and rename files
+# Change to target directory
 cd "$directory" || exit
 counter=1
 
+# Rename files
 for file in *; do
     if [ -f "$file" ]; then
-        new_base=""
-        
-        # Apply rename pattern if provided
-        if [ -n "$rename_pattern" ]; then
-            new_base=$(echo "$rename_pattern" | sed "s/#/$counter/g")
-        else
-            new_base="$file"
-        fi
-
-        # Extract file name and extension
-        base_name=$(basename "$file" | sed 's/\(.*\)\..*/\1/')
         extension="${file##*.}"
+        base_pattern=$(echo "$rename_pattern" | sed "s/#/$counter/g")
+        new_name="${prefix}${prefix:+_}${base_pattern}${suffix:+_}${suffix}${current_date:+_}${current_date}.${extension}"
 
-        # Create new name with prefix, new base name, current date, and suffix
-        new_name="${prefix}${base_name}_${new_base}_${current_date}${suffix}.${extension}"
-
-        # Rename the file
         mv -- "$file" "$new_name"
         echo "Renamed: $file -> $new_name"
 
