@@ -24,7 +24,7 @@ A Bash script to bulk rename files in a directory with a standardized pattern th
 
    ```bash
    git clone https://github.com/Zapwap123/BashScript-Bulk-File-Renamer
-   cd Bulk-File-Renamer
+   cd BashScript-Bulk-File-Renamer
    ```
 
 2. **Make the scripts executable**:
